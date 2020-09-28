@@ -1,41 +1,33 @@
 const CustomError = require("../extensions/custom-error");
 
 module.exports = function transform(arr) {
-  if (Array.isArray(arr)) {
-    
-    for (let i = 0; i < arr.length; i++) {
-      if (arr[i] === "--discard-next") {
-        if (arr.indexOf("--discard-next") + 1  < arr.length) {
-          arr.splice(arr.indexOf("--discard-next"), 2);
-        } else {
-          arr.splice(-1, 1);
-        }
-      } else if (arr[i] === "--discard-prev") {
-        if (arr.indexOf("--discard-prev") - 1  > 0) {
-          arr.splice((arr.indexOf("--discard-prev") - 1), 2);
-        } else {
-          arr.splice(arr.indexOf("--discard-prev"), 1);
-        }
-      } else if (arr[i] === "--double-next") {
-        if (arr.indexOf("--double-next") + 1  < arr.length) {
-          arr[arr.indexOf("--double-next")] = arr[arr.indexOf("--double-next") + 1];
-        } else {
-          arr.splice(arr.indexOf("--double-next"), 1);
-        }
-      } else if (arr[i] === "--double-prev") {
-        if (arr.indexOf("--double-prev") - 1  > 0) {
-          arr.splice(arr.indexOf("--double-prev"), 1, arr[arr.indexOf("--double-prev") - 1]);
-          
-        } else  {
-          arr.splice(0, 1);
-        }
-      }
+   if (Array.isArray(arr)) {
+      let arrNew = [];
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i] === '--discard-next') {
+            i++;
+            continue;
+         } else if (arr[i] === '--discard-prev' && arr[i - 2] !== '--discard-next') {
+            arrNew.pop();
+            i++;
+         } else if (arr[i] === '--double-next') {
+            if ((i + 2) < arr.length) {
+               arrNew.push(arr[i + 1]);
+            };
+            i++;
+         } else if (arr[i] === '--double-prev' && arr[i - 2] !== '--discard-next') {
+            if ((i - 1) >= 0) {
+               arrNew.push(arr[i - 1]);
+            };
+            i++
+         };
+         if (arr[i] !== undefined && arr[i] !== "--double-prev" && arr[i] !== "--double-next" && arr[i] !== "--discard-prev" && arr[i] !== "--discard-next" ) {
+            arrNew.push(arr[i]);
+         };
+      }  
+         return arrNew;
       
-    }
-    return arr;
-  
-
-  } else {
-    throw Error("It is not... an... array(");
-  }
+   } else {
+    throw new Error("It is not an array((((");
+   }
 };
