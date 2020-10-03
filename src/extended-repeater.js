@@ -22,16 +22,19 @@ module.exports = function repeater(str, options) {
   let additionsSeparator = options.additionSeparator;
   if (!additionsSeparator) additionsSeparator = "|";
 
+  
+  if (!!additions && additionsTime > 1) additionsRepeaterStr = (additions + additionsSeparator).repeat(additionsTime - 1) + additions;
+
   if (repeater > 1) {
     if (!!additions) {
-      if (additionsTime > 1) return (str + (additions + additionsSeparator).repeat(additionsTime -1) + additions + separate).repeat(repeater - 1) + (str + (additions + additionsSeparator).repeat(additionsTime - 1) + additions);
+      if (additionsTime > 1) return (str + additionsRepeaterStr + separate).repeat(repeater - 1) + (str + additionsRepeaterStr);
       return (str + additions + separate).repeat(repeater -1) + str + additions;
     } else {
       return (str + separate).repeat(repeater - 1) + str;
     }
   } else {
     if (!!additions) {
-      if(additionsTime > 1) return str + (additions + additionsSeparator).repeat(additionsTime - 1) + additions;
+      if (additionsTime > 1) return str + additionsRepeaterStr;
       return str + additions;
     } else {
       return str;
